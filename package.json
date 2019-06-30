@@ -5,16 +5,22 @@
   "main": "lib/workflow.js",
   "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-typescript": "^7.3.3",
     "husky": "^2.7.0",
     "typescript": "^3.5.2"
   },
   "scripts": {
+    "build": "npm run build:js && npm run build:types",
+    "build:js": "babel src -d lib -x \".ts\" --ignore \"**/*.test.ts\"",
     "build:types": "tsc --emitDeclarationOnly",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build:types"
+      "pre-commit": "npm run build"
     }
   },
   "repository": {
