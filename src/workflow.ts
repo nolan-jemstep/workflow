@@ -1,1 +1,1 @@
-export const workflow = (name: string): string => `hello ${name}`
+export const workflow = (name: string): string => `hello ${name}`;
