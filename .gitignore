@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+
+# ignore the lock file since it cannot be packaged
+# https://docs.npmjs.com/files/package-lock.json
+package-lock.json
+
+# build assets
+lib

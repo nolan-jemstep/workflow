@@ -1,0 +1,29 @@
+{
+  "name": "workflow",
+  "version": "1.0.0",
+  "description": "react component to navigate through pre-configured pages",
+  "main": "lib/workflow.js",
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^2.7.0",
+    "typescript": "^3.5.2"
+  },
+  "scripts": {
+    "build:types": "tsc --emitDeclarationOnly",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build:types"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nolan-jemstep/workflow.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nolan-jemstep/workflow/issues"
+  },
+  "homepage": "https://github.com/nolan-jemstep/workflow#readme"
+}
