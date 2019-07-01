@@ -5,9 +5,7 @@ interface WorkflowProps {
   name: string;
 }
 
-const Workflow: React.SFC<WorkflowProps> = ({
-  name,
-}: WorkflowProps): JSX.Element => (
+const Workflow: React.FunctionComponent<WorkflowProps> = ({ name }) => (
   <div data-testid="workflow">{greet(name)}</div>
 );
 
