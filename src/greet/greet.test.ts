@@ -1,7 +1,7 @@
 import greet from './greet';
 
-describe('greet', (): void => {
-  it('should provide salutations', (): void => {
+describe('greet', () => {
+  it('should provide salutations', () => {
     expect(greet('test')).toBe('hello test');
   });
 });
