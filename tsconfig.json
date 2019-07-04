@@ -4,14 +4,11 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "moduleResolution": "node",
+    "noUnusedParameters": true,
     "outDir": "lib",
     "strict": true,
     "target": "esnext"
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src"]
 }
