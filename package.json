@@ -42,7 +42,8 @@
     "prebuild": "npm run format",
     "pretest": "npm run build",
     "start:dev": "styleguidist server",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "husky": {
     "hooks": {

@@ -3,5 +3,5 @@ here is the thing
 ```js
 import Workflow from './workflow';
 
-<Workflow name="jeff" />;
+<Workflow items={['one', 'two', 'three']} />;
 ```
