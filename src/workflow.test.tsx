@@ -1,50 +1,82 @@
 import React from 'react';
 import { cleanup, render } from '@testing-library/react';
 import 'jest-dom/extend-expect';
-import Workflow from './workflow';
+import Workflow, { WorkflowItem, button } from './workflow';
 
 describe('<Workflow />', () => {
   afterEach(cleanup);
 
-  it('should display the first item', () => {
-    const items = ['one', 'two'];
+  const workflowItemFactory = (id: string, next?: string): WorkflowItem => ({
+    id,
+    next,
+    render: id,
+  });
+
+  const items = [
+    workflowItemFactory('one', 'two'),
+    workflowItemFactory('two', 'three'),
+    workflowItemFactory('three'),
+  ];
+
+  it('should display the initial item', () => {
+    const { getByText } = render(<Workflow initial="two" items={items} />);
+    expect(getByText('two')).toBeInTheDocument();
+  });
+
+  it('should display the first item if the initial item is not specified', () => {
     const { getByText } = render(<Workflow items={items} />);
     expect(getByText('one')).toBeInTheDocument();
   });
 
   it('should display the next item when the next button is clicked', () => {
-    const items = ['one', 'two'];
     const { getByText } = render(<Workflow items={items} />);
     expect(getByText('one')).toBeInTheDocument();
-    getByText('next').click();
+    getByText(button.next).click();
     expect(getByText('two')).toBeInTheDocument();
   });
 
-  it('should wrap around to the first item when the next button is clicked and the last item is displayed', () => {
-    const items = ['one', 'two'];
-    const { getByText } = render(<Workflow items={items} />);
-    expect(getByText('one')).toBeInTheDocument();
-    getByText('next').click();
-    expect(getByText('two')).toBeInTheDocument();
-    getByText('next').click();
-    expect(getByText('one')).toBeInTheDocument();
+  it('should disable the next button if the next field is not set', () => {
+    const { getByText } = render(<Workflow items={items} initial="three" />);
+    expect(getByText('three')).toBeInTheDocument();
+    expect(getByText(button.next)).toHaveAttribute('disabled');
   });
 
   it('should display the previous item when the previous button is clicked', () => {
-    const items = ['one', 'two'];
     const { getByText } = render(<Workflow items={items} />);
     expect(getByText('one')).toBeInTheDocument();
-    getByText('next').click();
+    getByText(button.next).click();
     expect(getByText('two')).toBeInTheDocument();
-    getByText('previous').click();
+    getByText(button.previous).click();
     expect(getByText('one')).toBeInTheDocument();
   });
 
-  it('should wrap around to the last item when the previous button is clicked and the first item is displayed', () => {
-    const items = ['one', 'two'];
+  it('should disable the previous button if the previous field is not set', () => {
     const { getByText } = render(<Workflow items={items} />);
+    getByText(button.previous).click();
     expect(getByText('one')).toBeInTheDocument();
-    getByText('previous').click();
-    expect(getByText('two')).toBeInTheDocument();
+    expect(getByText(button.previous)).toHaveAttribute('disabled');
   });
+
+  it('should keep a history of previous items', () => {
+    const { getByText } = render(<Workflow items={items} />);
+
+    const traverseWorkflow = (
+      [head, ...tail]: WorkflowItem[],
+      action: button.next | button.previous
+    ): void => {
+      expect(getByText(head.id)).toBeInTheDocument();
+      getByText(action).click();
+      if (tail.length > 0) {
+        traverseWorkflow(tail, action);
+      }
+    };
+
+    // traverse the workflow in the forward direction to build up a history
+    traverseWorkflow(items, button.next);
+    expect(getByText(button.next)).toHaveAttribute('disabled');
+    traverseWorkflow(items.reverse(), button.previous);
+    expect(getByText(button.previous)).toHaveAttribute('disabled');
+  });
+
+  // TODO - test whether you can click previous when starting from an arbitrary workflow item
 });

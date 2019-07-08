@@ -1,7 +1,11 @@
-here is the thing
-
 ```js
 import Workflow from './workflow';
 
-<Workflow items={['one', 'two', 'three']} />;
+const items = [
+  { id: 'one', next: 'two', render: 'one' },
+  { id: 'two', next: 'three', render: 'two' },
+  { id: 'three', render: 'three' },
+];
+
+<Workflow items={items} />;
 ```

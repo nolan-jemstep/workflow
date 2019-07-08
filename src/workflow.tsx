@@ -1,30 +1,55 @@
 import * as React from 'react';
 
-interface WorkflowProps {
-  items: React.ReactNode[];
+export enum button {
+  next = 'next',
+  previous = 'previous',
 }
 
-const Workflow: React.FunctionComponent<WorkflowProps> = ({ items }) => {
-  const [head] = items;
-  const [current, setCurrent] = React.useState(head);
+export interface WorkflowItem {
+  id: string;
+  next?: string;
+  previous?: string;
+  render: React.ReactNode;
+}
+
+interface WorkflowProps {
+  initial?: string;
+  items: WorkflowItem[];
+}
+
+const Workflow: React.FunctionComponent<WorkflowProps> = ({
+  initial,
+  items,
+}) => {
+  const [head, ...tail] = items;
+  const activeItem = tail.find(i => i.id === initial) || head;
+  const [current, setCurrent] = React.useState<WorkflowItem>(activeItem);
+  const [history, setHistory] = React.useState<WorkflowItem[]>([]);
 
   const next = (): void => {
-    const nextItemIndex = (items.indexOf(current) + 1) % items.length;
-    setCurrent(items[nextItemIndex]);
+    // cast as WorkflowItem since the disabled prop on the next button protects this from being undefined
+    const next = items.find(i => i.id === current.next) as WorkflowItem;
+    setHistory([...history, current]);
+    setCurrent({ ...next, previous: current.id });
   };
 
   const previous = (): void => {
-    const previousItemIndex = items.indexOf(current) - 1;
-    setCurrent(
-      items[previousItemIndex >= 0 ? previousItemIndex : items.length - 1]
-    );
+    // cast as WorkflowItem since the disabled prop on the previous button protects this from being undefined
+    const previous = history.pop() as WorkflowItem;
+    setCurrent(previous);
   };
 
   return (
     <>
-      <button onClick={previous}>previous</button>
-      {current}
-      <button onClick={next}>next</button>
+      {current.render}
+      <div>
+        <button onClick={previous} disabled={current.previous === undefined}>
+          {button.previous}
+        </button>
+        <button onClick={next} disabled={current.next === undefined}>
+          {button.next}
+        </button>
+      </div>
     </>
   );
 };
