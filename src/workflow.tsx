@@ -1,9 +1,24 @@
 import * as React from 'react';
 
-export enum button {
+export enum Labels {
   next = 'next',
   previous = 'previous',
 }
+
+export const buildHistory = (
+  current: WorkflowItem,
+  items: WorkflowItem[]
+): WorkflowItem[] => {
+  const go = (a: WorkflowItem, as: WorkflowItem[]): WorkflowItem[] => {
+    const p = as.find(i => i.next === a.id);
+    if (typeof p === 'undefined') {
+      return [a];
+    }
+    return [...go(p, as), { ...a, previous: p.id }];
+  };
+
+  return go(current, items);
+};
 
 export interface WorkflowItem {
   id: string;
@@ -14,7 +29,7 @@ export interface WorkflowItem {
 
 interface WorkflowProps {
   initial?: string;
-  items: WorkflowItem[];
+  items: readonly WorkflowItem[];
 }
 
 const Workflow: React.FunctionComponent<WorkflowProps> = ({
@@ -22,9 +37,11 @@ const Workflow: React.FunctionComponent<WorkflowProps> = ({
   items,
 }) => {
   const [head, ...tail] = items;
-  const activeItem = tail.find(i => i.id === initial) || head;
-  const [current, setCurrent] = React.useState<WorkflowItem>(activeItem);
-  const [history, setHistory] = React.useState<WorkflowItem[]>([]);
+  const active = tail.find(i => i.id === initial) || head;
+  const h = buildHistory(active, [...items]);
+  const c = h.pop() as WorkflowItem;
+  const [history, setHistory] = React.useState<WorkflowItem[]>(h);
+  const [current, setCurrent] = React.useState<WorkflowItem>(c);
 
   const next = (): void => {
     // cast as WorkflowItem since the disabled prop on the next button protects this from being undefined
@@ -44,10 +61,10 @@ const Workflow: React.FunctionComponent<WorkflowProps> = ({
       {current.render}
       <div>
         <button onClick={previous} disabled={current.previous === undefined}>
-          {button.previous}
+          {Labels.previous}
         </button>
         <button onClick={next} disabled={current.next === undefined}>
-          {button.next}
+          {Labels.next}
         </button>
       </div>
     </>
