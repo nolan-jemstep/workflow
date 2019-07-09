@@ -5,6 +5,23 @@ export enum Labels {
   previous = 'previous',
 }
 
+export interface WorkflowItem {
+  id: string;
+  next?: string;
+  previous?: string;
+  render: React.ReactNode;
+}
+
+interface WorkflowProps {
+  initial?: string;
+  items: readonly WorkflowItem[];
+}
+
+/**
+ * construct the path required to get up to, and including, the current item.
+ * @param {string} current the current item in the workflow
+ * @param {WorkflowItem[]} items the items in the workflow
+ */
 export const buildHistory = (
   current: WorkflowItem,
   items: WorkflowItem[]
@@ -20,26 +37,22 @@ export const buildHistory = (
   return go(current, items);
 };
 
-export interface WorkflowItem {
-  id: string;
-  next?: string;
-  previous?: string;
-  render: React.ReactNode;
-}
-
-interface WorkflowProps {
-  initial?: string;
-  items: readonly WorkflowItem[];
-}
+const initializeWorkflow = ({
+  initial,
+  items,
+}: WorkflowProps): [WorkflowItem, WorkflowItem[]] => {
+  const [head, ...tail] = items;
+  const active = tail.find(i => i.id === initial) || head;
+  const h = buildHistory(active, [...items]);
+  const c = h.pop() as WorkflowItem;
+  return [c, h];
+};
 
 const Workflow: React.FunctionComponent<WorkflowProps> = ({
   initial,
   items,
 }) => {
-  const [head, ...tail] = items;
-  const active = tail.find(i => i.id === initial) || head;
-  const h = buildHistory(active, [...items]);
-  const c = h.pop() as WorkflowItem;
+  const [c, h] = initializeWorkflow({ initial, items });
   const [history, setHistory] = React.useState<WorkflowItem[]>(h);
   const [current, setCurrent] = React.useState<WorkflowItem>(c);
 
