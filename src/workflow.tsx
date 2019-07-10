@@ -13,17 +13,17 @@ export interface WorkflowItem {
 }
 
 interface WorkflowProps {
+  /** the item that should be displayed when the workflow is rendered */
   initial?: string;
+  /** the items that the workflow traverses over */
   items: readonly WorkflowItem[];
 }
 
-/**
- * construct the path required to get up to, and including, the current item.
- * @param {string} current the current item in the workflow
- * @param {WorkflowItem[]} items the items in the workflow
- */
-export const buildHistory = (
+// construct the path required to get up to, and including, the current item.
+ export const buildHistory = (
+  // the current item in the workflow
   current: WorkflowItem,
+  // items the items in the workflow
   items: WorkflowItem[]
 ): WorkflowItem[] => {
   const go = (a: WorkflowItem, as: WorkflowItem[]): WorkflowItem[] => {
