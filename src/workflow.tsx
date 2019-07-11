@@ -20,7 +20,7 @@ interface WorkflowProps {
 }
 
 // construct the path required to get up to, and including, the current item.
- export const buildHistory = (
+export const buildHistory = (
   // the current item in the workflow
   current: WorkflowItem,
   // items the items in the workflow
