@@ -38,11 +38,12 @@
     "build": "npm run build:js && npm run build:types",
     "build:js": "babel src -d lib -x \".ts,.tsx\" --ignore '**/*.test.ts,**/*.test.tsx'",
     "build:types": "tsc --emitDeclarationOnly",
-    "format": "eslint src --ext \".ts,.tsx\" --fix",
+    "format": "eslint src --ext \".ts,.tsx\"",
     "prebuild": "npm run format",
     "pretest": "npm run build",
     "start:dev": "styleguidist server",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "husky": {
     "hooks": {
