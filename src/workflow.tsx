@@ -48,10 +48,7 @@ const initializeWorkflow = ({
   return [c, h];
 };
 
-const Workflow: React.FunctionComponent<WorkflowProps> = ({
-  initial,
-  items,
-}) => {
+const Workflow = ({ initial = 'one', items }: WorkflowProps) => {
   const [c, h] = initializeWorkflow({ initial, items });
   const [history, setHistory] = React.useState<WorkflowItem[]>(h);
   const [current, setCurrent] = React.useState<WorkflowItem>(c);
